@@ -72,6 +72,7 @@ public class ProfileInformation extends AppCompatActivity {
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
                         Log.e(TAG, response.toString());
+                        finish();
                     }
                 });
             }
@@ -114,9 +115,9 @@ public class ProfileInformation extends AppCompatActivity {
                         @Override
                         public void run() {
                             try {
-                                tvEmail.setText(jsonObject.getString("email"));
-                                tvName.setText(jsonObject1.getString("name"));
-                                tvSurname.setText(jsonObject1.getString("surname"));
+                                tvEmail.setText("email: "+jsonObject.getString("email"));
+                                tvName.setText("name: "+jsonObject1.getString("name"));
+                                tvSurname.setText("surname: "+jsonObject1.getString("surname"));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

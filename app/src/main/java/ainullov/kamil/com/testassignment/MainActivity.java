@@ -48,8 +48,6 @@ public class MainActivity extends AppCompatActivity {
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (etLogin.length() != 0 && etPass.length() != 0) {
-
                     CookieManager cookieManager = new CookieManager();
                     cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
 
@@ -99,10 +97,6 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                     });
-
-                } else {
-                    Toast.makeText(getApplicationContext(), "Заполните поля!", Toast.LENGTH_SHORT).show();
-                }
             }
         });
     }
