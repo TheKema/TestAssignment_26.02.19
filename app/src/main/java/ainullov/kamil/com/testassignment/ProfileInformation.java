@@ -3,7 +3,6 @@ package ainullov.kamil.com.testassignment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,8 +20,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
-import static android.support.constraint.Constraints.TAG;
 
 public class ProfileInformation extends AppCompatActivity {
     private TextView tvName;
@@ -62,11 +59,11 @@ public class ProfileInformation extends AppCompatActivity {
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        Toast.makeText(getApplicationContext(), "Ошибка: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        onFail(e);
                     }
 
                     @Override
-                    public void onResponse(Call call, Response response){
+                    public void onResponse(Call call, Response response) {
                         finish();
                     }
                 });
@@ -91,26 +88,24 @@ public class ProfileInformation extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Toast.makeText(getApplicationContext(), "Ошибка: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                onFail(e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.d(TAG, response.toString());
                 final JSONObject jsonObject;
                 String jsonData = response.body().string();
                 try {
                     jsonObject = new JSONObject(jsonData);
-                    final JSONObject jsonObject1 = jsonObject.getJSONObject("fields");
-                    Log.e(TAG, jsonData);
+                    final JSONObject jsonObjectFields = jsonObject.getJSONObject("fields");
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
                                 //Отображение данных из полученного json-объекта
-                                tvName.setText("Имя: " + jsonObject1.getString("name"));
-                                tvSurname.setText("Фамилия: " + jsonObject1.getString("surname"));
+                                tvName.setText("Имя: " + jsonObjectFields.getString("name"));
+                                tvSurname.setText("Фамилия: " + jsonObjectFields.getString("surname"));
                                 tvEmail.setText("Эл. почта: " + jsonObject.getString("email"));
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -120,6 +115,15 @@ public class ProfileInformation extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+        });
+    }
+
+    public void onFail(IOException e) {
+        final IOException exception = e;
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(getApplicationContext(), "Ошибка: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

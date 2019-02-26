@@ -77,7 +77,12 @@ public class MainActivity extends AppCompatActivity {
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        Toast.makeText(getApplicationContext(), "Ошибка: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        final IOException exception = e;
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), "Ошибка: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
 
                     @Override
