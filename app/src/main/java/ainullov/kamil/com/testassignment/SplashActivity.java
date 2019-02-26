@@ -9,8 +9,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Приложение без дополнительной задержки отображает картинку в течении почти 2 секунд
+        // Приложение без дополнительной задержки отображает картинку в течении 1.5 секунды
         synchronized (this) {
             try {
                 wait(1500);
@@ -18,12 +17,8 @@ public class SplashActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-
-
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
     }
-
-
 }

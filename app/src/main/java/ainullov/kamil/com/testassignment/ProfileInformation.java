@@ -13,13 +13,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.Cookie;
-import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -39,9 +35,9 @@ public class ProfileInformation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_information);
 
+        // Получаем значение JSESSIONID из MainActivity
         Intent intent = getIntent();
         String cookie = intent.getStringExtra("cookie");
-
 
         tvName = (TextView) findViewById(R.id.tvName);
         tvSurname = (TextView) findViewById(R.id.tvSurname);
@@ -51,6 +47,7 @@ public class ProfileInformation extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                // Запрос на выход из системы
                 MediaType mediaType = MediaType.parse("application/json");
                 RequestBody body = RequestBody.create(mediaType, "{\"loginType\":\"email\",\"login\":\"admin@mail.ru\",\"password\":\"123456\"}");
                 OkHttpClient client = new OkHttpClient();
@@ -65,20 +62,18 @@ public class ProfileInformation extends AppCompatActivity {
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        Log.e(TAG, "onFailure");
                         Toast.makeText(getApplicationContext(), "Ошибка: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        Log.e(TAG, response.toString());
+                    public void onResponse(Call call, Response response){
                         finish();
                     }
                 });
             }
         });
 
-
+        // Запрос на информацию о профиле
         OkHttpClient client = new OkHttpClient();
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, "{\"loginType\":\"email\",\"login\":\"admin@mail.ru\",\"password\":\"123456\"}");
@@ -86,8 +81,7 @@ public class ProfileInformation extends AppCompatActivity {
         final Request request = new Request.Builder()
                 .url("http://185.27.193.111:8082/ckpt-core-web-1.0/platform/api/user/logged")
                 .post(body)
-
-
+                //Куки из ответа на первый запрос
                 .header("Cookie", "JSESSIONID=" + cookie)
                 .addHeader("Content-Type", "application/json")
                 .addHeader("cache-control", "no-cache")
@@ -97,7 +91,6 @@ public class ProfileInformation extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e(TAG, "onFailure");
                 Toast.makeText(getApplicationContext(), "Ошибка: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
@@ -115,16 +108,15 @@ public class ProfileInformation extends AppCompatActivity {
                         @Override
                         public void run() {
                             try {
-                                tvEmail.setText("email: "+jsonObject.getString("email"));
-                                tvName.setText("name: "+jsonObject1.getString("name"));
-                                tvSurname.setText("surname: "+jsonObject1.getString("surname"));
+                                //Отображение данных из полученного json-объекта
+                                tvName.setText("Имя: " + jsonObject1.getString("name"));
+                                tvSurname.setText("Фамилия: " + jsonObject1.getString("surname"));
+                                tvEmail.setText("Эл. почта: " + jsonObject.getString("email"));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
                         }
                     });
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
